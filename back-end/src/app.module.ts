@@ -21,6 +21,9 @@ import {FileUploadModule} from "./common/file-upload/file-upload.module";
 import {CategoryModule} from "./category/category.module";
 import {TagModule} from "./tag/tag.module";
 import {ContentModule} from "./content/content.module";
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from "path";
+
 
 @Module({
   imports: [
@@ -53,7 +56,10 @@ import {ContentModule} from "./content/content.module";
     FileUploadModule,
     CategoryModule,
     TagModule,
-    ContentModule
+    ContentModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, './../uploads')
+    }),
   ],
   controllers: [AppController],
   providers: [
