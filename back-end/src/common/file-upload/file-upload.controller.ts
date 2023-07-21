@@ -9,6 +9,13 @@ import { diskStorage } from 'multer';
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
+  @Get()
+  helloWorld(){
+    return {
+      text: 'success'
+    }
+  }
+
   @Post()
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -20,6 +27,22 @@ export class FileUploadController {
   }))
   uploadFile(@UploadedFile() file) {
     console.log(file);
+    return file
+  }
+
+
+  @Post('/resolve')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
+      }
+    })
+  }))
+  resolveExcelFile(@UploadedFile() file) {
+    console.log(file);
+    this.fileUploadService.resolveExcelFile(file)
     return file
   }
 

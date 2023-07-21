@@ -4,23 +4,12 @@ import { UpdateFileUploadDto } from './dto/update-file-upload.dto';
 
 @Injectable()
 export class FileUploadService {
-  create(createFileUploadDto: CreateFileUploadDto) {
-    return 'This action adds a new fileUpload';
-  }
 
-  findAll() {
-    return `This action returns all fileUpload`;
-  }
+  // 合法的 excel 第一行内容
+  static langStringList = ["en", "cn", "br", "de", "es", "id", "pt", "ru", "th", "tr", "uk", "vn", "ja", "ar", "fr", "tw"]
 
-  findOne(id: number) {
-    return `This action returns a #${id} fileUpload`;
-  }
+  resolveExcelFile(fileObj: File){
+    console.log(fileObj);
 
-  update(id: number, updateFileUploadDto: UpdateFileUploadDto) {
-    return `This action updates a #${id} fileUpload`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} fileUpload`;
   }
 }
