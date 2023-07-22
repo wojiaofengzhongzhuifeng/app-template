@@ -1,4 +1,4 @@
-import {Repository} from "typeorm";
+import {FindOptionsWhere, Repository} from "typeorm";
 import {CreateCategoryDto} from "../../category/dto/create-category.dto";
 // import {UpdateCategoryDto} from "../../category/dto/update-category.dto";
 import {RequestException} from "../exceptions/request.exception";
@@ -20,9 +20,7 @@ export abstract class BaseService<T, C, U> {
 
   async updateById(id: number, updateDTO: U){
     const result = await this.repository.findOne({
-      // @ts-ignore
-      // todo 模版 删除这个 ts-ignore 并且不会报错
-      where: {id}
+      where: {id} as unknown as FindOptionsWhere<T>
     })
 
     if(!result) throw new RequestException(`根据 id:${id}, 无法找到数据`);
@@ -37,18 +35,13 @@ export abstract class BaseService<T, C, U> {
   }
 
   async getListByPagination(entityString, page: number, limit: number): Promise<{ items: T[], total }> {
-    // todo 解决 isDel
-    // @ts-ignore
-    const [items, total] = await queryEntityPagination<T>(this.repository, entityString, page, limit, {isDel: 0})
+    const [items, total] = await queryEntityPagination<T>(this.repository, entityString, page, limit, {isDel: 0} as unknown as Partial<T>)
     return {items, total}
   }
 
   async getAllInfoById(id: number, relateEntityStringList: string[], ){
     const category = await this.repository.findOne({
-      // todo isDel 有没有统一管理的地方？
-      // @ts-ignore
-      // todo 解决这个ignore
-      where: {id},
+      where: {id, isDel: 0}  as unknown as FindOptionsWhere<T>,
       relations: relateEntityStringList
     })
 
