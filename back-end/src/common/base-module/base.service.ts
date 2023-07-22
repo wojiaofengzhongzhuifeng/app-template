@@ -40,15 +40,16 @@ export abstract class BaseService<T, C, U> {
   }
 
   async getAllInfoById(id: number, relateEntityStringList: string[], ){
-    const category = await this.repository.findOne({
+    const item = await this.repository.findOne({
       where: {id, isDel: 0}  as unknown as FindOptionsWhere<T>,
       relations: relateEntityStringList
     })
 
-    if(!category){
-      throw new RequestException('无法根据 categoryId 找到数据')
+    if(!item){
+      throw new RequestException('无法根据 id 找到数据')
     }
-    return category
+    console.log('item', item);
+    return item
   }
 
   // 帮助函数

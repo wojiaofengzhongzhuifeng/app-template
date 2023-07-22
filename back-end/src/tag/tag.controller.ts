@@ -52,8 +52,9 @@ export class TagController extends BaseController<Tag, CreateTagDto, UpdateTagDt
   * - 获取作者的详情
   * - 请求方式 http://localhost:3009/tag/:tagId
   * */
+  // todo 在这里返回 category 数据？
   @Get(':tagId')
-  async getAllInfoById(@Param('categoryId') tagId: number){
+  async getAllInfoById(@Param('tagId') tagId: number){
     return super.getAllInfoById(tagId, ['contents']);
   }
 
