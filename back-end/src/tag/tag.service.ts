@@ -13,7 +13,7 @@ import {CustomLogService} from "../common/custom-log/custom-log.service";
 import {CategoryService} from "../category/category.service";
 
 @Injectable()
-export class TagService {
+export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
 
   constructor(
 
@@ -24,91 +24,83 @@ export class TagService {
     private categoryService: CategoryService
 
   ) {
-
+    super(tagRepository)
   }
 
   async create(createTagDto: CreateTagDto) {
-    const {name, description, categoryId} = createTagDto
-    const tag = new Tag()
 
-    tag.description = description
-    tag.name = name
-
-    const category = await this.categoryService.findOne(categoryId)
-    if (!category) {
-      throw new RequestException(`无法找到 categoryId: ${categoryId} 的数据`)
+    // 创建 tag 的时候，需要执行自定义的逻辑（），然后再执行通用逻辑
+    // 1. 检查是否有category
+    const {categoryId, name, description} = createTagDto
+    let category = null
+    if(categoryId){
+      category = await this.categoryService.findOne(categoryId)
+      if(!category){
+        throw new RequestException(`无法找到 categoryId: ${categoryId} 的数据`)
+      }
     }
-    tag.category = category
 
-
-    const sqlResult = this.tagRepository.save(tag)
+    // 2. 执行create通用逻辑
+    const createTag = new Tag()
+    createTag.name = name
+    createTag.description = description
+    createTag.category = category
+    const sqlResult = await super.create(createTag)
     return sqlResult
+
   }
 
 
-  async delete(id: number) {
-    return this.updateById(id, {isDel: 1})
-  }
-
-  async findPagination(page: number, limit: number): Promise<{ items: Tag[], total }> {
-    console.log('page', page);
-    console.log('limit', limit);
-    const [items, total] = await queryEntityPagination<Tag>(this.tagRepository, 'tag', page, limit, {isDel: 0})
-
-
-
-    return {items, total}
-  }
-
-  async getInfoById(id: number){
-
-    const tag = await this.tagRepository.findOne({
-      where: { id },
-      relations: ['category', 'contents']
-    });
-
-    if(!tag){
-      throw new RequestException('无法根据 tagId 找到数据')
-    }
-    return tag
-  }
+  // async delete(id: number) {
+  //   return super.delete(id)
+  // }
 
   async updateById(id: number, updateTagDto: UpdateTagDto){
+
     const {categoryId} = updateTagDto
-    const tag = await this.tagRepository.findOne({
-      where: {id}
-    })
 
-    if(!tag) throw new RequestException(`tagId: ${id} 无法找到作者`);
-
-    let updatedTag = {...tag, ...updateTagDto}
-
-
+    let category = null
     if(categoryId){
-      // 需要更新 category:tag 的关联关系
-      const category = await this.categoryService.findOne(categoryId)
+      category = await this.categoryService.findOne(categoryId)
       if(!category){
-        throw new RequestException(`无法根据 categoryId: ${categoryId} 无法找到数据`);
+        throw new RequestException(`根据 id:${id}, 无法找到数据`)
       }
-      updatedTag.category = category
     }
+    updateTagDto.category = category
+
+    // todo 这样做会导致响应数据中，多了一个 categoryId
+    let sqlResult = super.updateById(id, updateTagDto)
+
+    return sqlResult
 
 
 
-
-    const saveResult = await this.tagRepository.save(updatedTag)
-
-    console.log('saveResult', saveResult);
-
-    return saveResult
 
 
   }
 
-  async findOne(id: number){
-    const tag = await this.tagRepository.findOne({
-      where: {id}
-    })
-    return tag
-  }
+  // async getListByPagination(page: number, limit: number): Promise<{ items: Tag[], total }> {
+  //
+  //   const [items, total] = await queryEntityPagination<Tag>(this.tagRepository, 'tag', page, limit, {isDel: 0})
+  //
+  //
+  //
+  //   return {items, total}
+  // }
+
+  // async getInfoById(id: number){
+  //
+  //   const tag = await this.tagRepository.findOne({
+  //     where: { id },
+  //     relations: ['category', 'contents']
+  //   });
+  //
+  //   if(!tag){
+  //     throw new RequestException('无法根据 tagId 找到数据')
+  //   }
+  //   return tag
+  // }
+
+
+
 }

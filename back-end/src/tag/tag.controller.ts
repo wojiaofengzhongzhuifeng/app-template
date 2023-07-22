@@ -3,30 +3,34 @@ import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import {PaginationPipe} from "../common/pipes/pagination.pipe";
+import {BaseController} from "../common/base-module/base.controller";
+import {Tag} from "./entities/tag.entity";
 
 @Controller('tag')
-export class TagController {
-  constructor(private readonly tagService: TagService) {}
-
-  @Post()
-  create(@Body() createTagDto: CreateTagDto) {
-    return this.tagService.create(createTagDto);
+export class TagController extends BaseController<Tag, CreateTagDto, UpdateTagDto>{
+  constructor(private readonly tagService: TagService) {
+    super(tagService)
   }
 
-  @Delete()
-  delete(
-    @Query('id') id
-  ){
-    return this.tagService.delete(id)
-  }
+  // @Post()
+  // create(@Body() createTagDto: CreateTagDto) {
+  //   return this.tagService.create(createTagDto);
+  // }
 
-  @Put(':tagId')
-  async updateById(
-    @Param('tagId') tagId: number,
-    @Body() updateTagDto: UpdateTagDto
-  ){
-    return this.tagService.updateById(tagId, updateTagDto)
-  }
+  // @Delete()
+  // delete(
+  //   @Query('id') id
+  // ){
+  //   return this.tagService.delete(id)
+  // }
+
+  // @Put(':tagId')
+  // async updateById(
+  //   @Param('tagId') tagId: number,
+  //   @Body() updateTagDto: UpdateTagDto
+  // ){
+  //   return this.tagService.updateById(tagId, updateTagDto)
+  // }
 
   /*
   * 注意点：
@@ -36,12 +40,10 @@ export class TagController {
   *
   * */
   @Get()
-  findPagination(
+  getListByPagination(
     @Query(new PaginationPipe()) {page, limit}: { page: number; limit: number },
   ) {
-    console.log('test', typeof limit, page);
-
-    return this.tagService.findPagination((page), (limit));
+    return super.getListByPagination({page, limit, entityString: 'tag'})
   }
 
   /*
@@ -51,8 +53,8 @@ export class TagController {
   * - 请求方式 http://localhost:3009/tag/:tagId
   * */
   @Get(':tagId')
-  async getInfoById(@Param('tagId') tagId: number){
-    return this.tagService.getInfoById(tagId);
+  async getAllInfoById(@Param('categoryId') tagId: number){
+    return super.getAllInfoById(tagId, ['contents']);
   }
 
 

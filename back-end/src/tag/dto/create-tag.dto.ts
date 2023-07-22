@@ -1,18 +1,11 @@
 import {IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {OmitType} from "@nestjs/mapped-types";
+import {Tag} from "../entities/tag.entity";
 
-export class CreateTagDto {
+export class CreateTagDto extends OmitType(Tag, ['id', 'createdAt', 'updatedAt', 'contents', 'category']){
 
-  @IsString()
-  name: string
 
-  @IsString()
-  description: string
-
-  @IsNumber()
   @IsOptional()
-  isDel: number
-
-  @IsNotEmpty()
   @IsNumber()
   categoryId: number
 }

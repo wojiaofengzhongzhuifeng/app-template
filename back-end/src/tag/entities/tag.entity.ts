@@ -3,12 +3,15 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from 'type
 import { Book } from '../../book/entities/book.entity';
 import {Category} from "../../category/entities/category.entity";
 import {Content} from "../../content/entities/content.entity";
+import {BaseEntity} from "../../common/base-module/base.entity";
 
 @Entity()
-export class Tag {
+export class Tag extends BaseEntity{
 
-  @PrimaryGeneratedColumn()
-  id: number;
+
+
+  // @PrimaryGeneratedColumn()
+  // id: number;
 
   @Column()
   name: string;
@@ -16,10 +19,7 @@ export class Tag {
   @Column()
   description: string;
 
-  @Column({
-    default: 0
-  })
-  isDel: number
+
 
   @ManyToOne(()=>Category, (category)=>category.tags)
   category: Category

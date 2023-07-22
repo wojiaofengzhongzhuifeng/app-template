@@ -55,7 +55,7 @@ export abstract class BaseService<T, C, U> {
   async findOne(id: number){
     const item = await this.repository.findOne({
       // @ts-ignore
-      where: { id },
+      where: { id, isDel: 0},
     });
     return item
   }
