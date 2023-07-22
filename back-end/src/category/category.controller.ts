@@ -13,19 +13,15 @@ export class CategoryController extends BaseController<Category, CreateCategoryD
     super(categoryService)
   }
 
-  // 临时代码
-
-  // 临时代码
-
   @Get()
-  getListByPagination(
-    @Query(new PaginationPipe()) {page, limit}: { page: number; limit: number },
+  getData(
+    @Query(new PaginationPipe()) {page, limit, id}: { page: number; limit: number, id: number},
   ) {
-    return super.getListByPagination({page, limit, entityString: 'category'})
-  }
+    if(id){
+      return  super.getData({id, relateEntityStringList: ['tags']});
+    } else {
+      return  super.getData({limit, page, entityString: 'category'})
+    }
 
-  @Get(':categoryId')
-  async getAllInfoById(@Param('categoryId') categoryId: number){
-    return super.getAllInfoById(categoryId, ['tags']);
   }
 }

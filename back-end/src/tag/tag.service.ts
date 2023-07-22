@@ -27,14 +27,14 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
     super(tagRepository)
   }
 
-  async create(createTagDto: CreateTagDto) {
+  async createService(createTagDto: CreateTagDto) {
 
     // 创建 tag 的时候，需要执行自定义的逻辑（），然后再执行通用逻辑
     // 1. 检查是否有category
     const {categoryId, name, description} = createTagDto
     let category = null
     if(categoryId){
-      category = await this.categoryService.findOne(categoryId)
+      category = await this.categoryService.findOneService(categoryId)
       if(!category){
         throw new RequestException(`无法找到 categoryId: ${categoryId} 的数据`)
       }
@@ -45,7 +45,7 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
     createTag.name = name
     createTag.description = description
     createTag.category = category
-    const sqlResult = await super.create(createTag)
+    const sqlResult = await super.createService(createTag)
     return sqlResult
 
   }
@@ -55,13 +55,13 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
   //   return super.delete(id)
   // }
 
-  async updateById(id: number, updateTagDto: UpdateTagDto){
+  async updateByIdService(id: number, updateTagDto: UpdateTagDto){
 
     const {categoryId} = updateTagDto
 
     let category = null
     if(categoryId){
-      category = await this.categoryService.findOne(categoryId)
+      category = await this.categoryService.findOneService(categoryId)
       if(!category){
         throw new RequestException(`根据 id:${id}, 无法找到数据`)
       }
@@ -69,7 +69,7 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
     updateTagDto.category = category
 
     // todo 这样做会导致响应数据中，多了一个 categoryId
-    let sqlResult = super.updateById(id, updateTagDto)
+    let sqlResult = super.updateByIdService(id, updateTagDto)
 
     return sqlResult
 

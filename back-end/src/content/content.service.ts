@@ -35,7 +35,7 @@ export class ContentService{
     const test = {...new Content(), ...createContentDto}
 
     if(tagId){
-      const tag = await this.tagService.findOne(tagId)
+      const tag = await this.tagService.findOneService(tagId)
       if (!tag) {
         throw new RequestException(`无法找到 categoryId: ${tagId} 的数据`)
       }
@@ -88,7 +88,7 @@ export class ContentService{
 
 
     if(tagId){
-      const tag = await this.tagService.findOne(tagId)
+      const tag = await this.tagService.findOneService(tagId)
       if(!tag){
         throw new RequestException(`无法根据 tagId: ${tagId} 无法找到数据`);
       }

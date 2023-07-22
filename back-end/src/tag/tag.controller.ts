@@ -12,50 +12,18 @@ export class TagController extends BaseController<Tag, CreateTagDto, UpdateTagDt
     super(tagService)
   }
 
-  // @Post()
-  // create(@Body() createTagDto: CreateTagDto) {
-  //   return this.tagService.create(createTagDto);
-  // }
 
-  // @Delete()
-  // delete(
-  //   @Query('id') id
-  // ){
-  //   return this.tagService.delete(id)
-  // }
 
-  // @Put(':tagId')
-  // async updateById(
-  //   @Param('tagId') tagId: number,
-  //   @Body() updateTagDto: UpdateTagDto
-  // ){
-  //   return this.tagService.updateById(tagId, updateTagDto)
-  // }
-
-  /*
-  * 注意点：
-  * - 分页查询作者信息，查询非 book 的数据
-  * - 请求方式 http://localhost:3009/tag?page=2&limit=5
-  * - 从 page = 1 开始
-  *
-  * */
   @Get()
-  getListByPagination(
-    @Query(new PaginationPipe()) {page, limit}: { page: number; limit: number },
+  getData(
+    @Query(new PaginationPipe()) {page, limit, id}: { page: number; limit: number, id: number},
   ) {
-    return super.getListByPagination({page, limit, entityString: 'tag'})
-  }
+    if(id){
+      return  super.getData({id, relateEntityStringList: ['contents']});
+    } else {
+      return  super.getData({limit, page, entityString: 'tag'})
+    }
 
-  /*
-  *
-  * 注意点：
-  * - 获取作者的详情
-  * - 请求方式 http://localhost:3009/tag/:tagId
-  * */
-  // todo 在这里返回 category 数据？
-  @Get(':tagId')
-  async getAllInfoById(@Param('tagId') tagId: number){
-    return super.getAllInfoById(tagId, ['contents']);
   }
 
 

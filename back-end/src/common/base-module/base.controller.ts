@@ -9,39 +9,45 @@ export abstract class BaseController<T, C, U> {
 
   @Post()
   create(@Body() createDTO: C) {
-    return this.service.create(createDTO);
+    return this.service.createService(createDTO);
   }
 
   @Delete()
   delete(
     @Query('id') id
   ){
-    return this.service.delete(id)
+    return this.service.deleteService(id)
   }
 
-  @Put(':id')
+  @Put()
   async updateById(
-    @Param('id') id: number,
+    @Query('id') id: number,
     @Body() updateDTO: U
   ){
-    return this.service.updateById(id, updateDTO)
+    return this.service.updateByIdService(id, updateDTO)
   }
 
   @Get()
-  getListByPagination(
-    @Query(new PaginationPipe()) {page, limit, entityString}: { page: number; limit: number,  entityString: string},
+  getData(
+    @Query(new PaginationPipe())
+      {page, limit, id, relateEntityStringList, entityString}: { page?: number; limit?: number, id?: number, relateEntityStringList?: string[], entityString?: string},
   ) {
-    return this.service.getListByPagination(entityString, (page), (limit));
+    if(id){
+      return this.service.getAllInfoByIdService({id, relateEntityStringList,} );
+    } else {
+      return this.service.getListByPaginationService({entityString,page,limit});
+    }
+
   }
 
-  /*
-*
-* 注意点：
-* - 请求方式 http://localhost:3009/category/:categoryId
-* */
-  @Get(':id')
-  async getAllInfoById(@Param('id') id: number, relateEntityStringList: string[]){
-    return this.service.getAllInfoById(id, relateEntityStringList, );
-  }
+//   /*
+// *
+// * 注意点：
+// * - 请求方式 http://localhost:3009/category/:categoryId
+// * */
+//   @Get()
+//   async getAllInfoById(@Param('id') id: number, relateEntityStringList: string[]){
+//     return this.service.getAllInfoById(id, relateEntityStringList, );
+//   }
 
 }

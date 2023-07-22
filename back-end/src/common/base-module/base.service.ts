@@ -8,17 +8,17 @@ import {queryEntityPagination} from "../utils";
 export abstract class BaseService<T, C, U> {
   constructor(private readonly repository: Repository<T>) {}
 
-  async create(createDTO: any) {
+  async createService(createDTO: any) {
     const result = await this.repository.save(createDTO)
     return result
   }
 
-  async delete(id: number) {
+  async deleteService(id: number) {
     // @ts-ignore
-    return this.updateById(id, {isDel: 1})
+    return this.updateByIdService(id, {isDel: 1})
   }
 
-  async updateById(id: number, updateDTO: U){
+  async updateByIdService(id: number, updateDTO: U){
     const result = await this.repository.findOne({
       where: {id} as unknown as FindOptionsWhere<T>
     })
@@ -34,12 +34,12 @@ export abstract class BaseService<T, C, U> {
 
   }
 
-  async getListByPagination(entityString, page: number, limit: number): Promise<{ items: T[], total }> {
+  async getListByPaginationService({entityString, page, limit}): Promise<{ items: T[], total }> {
     const [items, total] = await queryEntityPagination<T>(this.repository, entityString, page, limit, {isDel: 0} as unknown as Partial<T>)
     return {items, total}
   }
 
-  async getAllInfoById(id: number, relateEntityStringList: string[], ){
+  async getAllInfoByIdService({id, relateEntityStringList}){
     const item = await this.repository.findOne({
       where: {id, isDel: 0}  as unknown as FindOptionsWhere<T>,
       relations: relateEntityStringList
@@ -53,7 +53,7 @@ export abstract class BaseService<T, C, U> {
   }
 
   // 帮助函数
-  async findOne(id: number){
+  async findOneService(id: number){
     const item = await this.repository.findOne({
       // @ts-ignore
       where: { id, isDel: 0},
