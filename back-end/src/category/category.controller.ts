@@ -13,6 +13,10 @@ export class CategoryController extends BaseController<Category, CreateCategoryD
     super(categoryService)
   }
 
+  // 临时代码
+
+  // 临时代码
+
   @Get()
   getListByPagination(
     @Query(new PaginationPipe()) {page, limit}: { page: number; limit: number },

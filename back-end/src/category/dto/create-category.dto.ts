@@ -1,14 +1,6 @@
-import {IsNumber, IsOptional, IsString} from "class-validator";
+import {OmitType} from "@nestjs/mapped-types";
+import {Category} from "../entities/category.entity";
 
-export class CreateCategoryDto {
+export class CreateCategoryDto extends OmitType(Category, ['id', 'createdAt', 'updatedAt', 'tags']){
 
-  @IsString()
-  name: string
-
-  @IsString()
-  description: string
-
-  @IsNumber()
-  @IsOptional()
-  isDel: number
 }

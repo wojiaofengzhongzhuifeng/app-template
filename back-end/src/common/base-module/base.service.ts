@@ -60,11 +60,11 @@ export abstract class BaseService<T, C, U> {
 
   // 帮助函数
   async findOne(id: number){
-    const category = await this.repository.findOne({
+    const item = await this.repository.findOne({
       // @ts-ignore
       where: { id },
     });
-    return category
+    return item
   }
 
 }

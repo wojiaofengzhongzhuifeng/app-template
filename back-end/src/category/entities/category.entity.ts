@@ -20,4 +20,3 @@ export class Category extends BaseEntity{
   @OneToMany(()=>Tag, (tag)=>tag.category)
   tags: Tag[]
 }
-// todo 模版： 添加baseEntity

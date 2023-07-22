@@ -18,6 +18,7 @@ instance.interceptors.response.use(function (response) {
   }
 
 }, function (error) {
+  // todo 如果httpcode 是非200 ，就会执行这里?
   console.error('error request error', error)
   return Promise.reject(error);
 });

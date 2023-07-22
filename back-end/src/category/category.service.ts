@@ -21,10 +21,5 @@ export class CategoryService extends BaseService<Category, CreateCategoryDto, Up
     super(categoryRepository)
   }
 
-  async findOne(id: number){
-    const category = await this.categoryRepository.findOne({
-      where: { id },
-    });
-    return category
-  }
+
 }
