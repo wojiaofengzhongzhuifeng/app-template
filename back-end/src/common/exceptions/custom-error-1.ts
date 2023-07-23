@@ -6,8 +6,8 @@ import {MessageCodeMap} from "../interceptors/response.interceptor";
 export class CustomError1 extends HttpException {
   messageCode: number;
 
-  constructor(customCode: number) {
-    const response = getKeyByValue(MessageCodeMap, customCode)
+  constructor(customCode: number, data?: any) {
+    const response = data || getKeyByValue(MessageCodeMap, customCode)
 
     super(response, HttpStatus.OK);
     this.messageCode = customCode;

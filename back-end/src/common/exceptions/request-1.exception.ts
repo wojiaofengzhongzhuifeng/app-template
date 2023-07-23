@@ -7,8 +7,8 @@ export class Request1Exception extends HttpException {
   messageCode: number;
 
 
-  constructor(customCode: number = HttpStatus.BAD_REQUEST) {
-    const response = getKeyByValue(MessageCodeMap, customCode)
+  constructor(customCode: number = HttpStatus.BAD_REQUEST, data?: any) {
+    const response = data || getKeyByValue(MessageCodeMap, customCode)
 
     console.log('response111', response);
 

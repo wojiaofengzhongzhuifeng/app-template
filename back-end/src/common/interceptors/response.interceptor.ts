@@ -15,9 +15,11 @@ export const MessageCodeMap = {
   outOfStock: 20001, // 假设代表库存不足
 
   // 请求错误
+  requestError: 40000, // 请求通用错误
   noFoundById: 40001, // 无法根据id找到数据
 
   // 响应错误
+  internalError: 50000, // 服务器通用错误
   dataBaseError: 50001 // 服务器错误
 }
 

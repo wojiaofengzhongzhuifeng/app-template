@@ -5,6 +5,8 @@ import * as path from "path";
 import {File} from './entities/file.entity'
 import {RequestException} from "../exceptions/request.exception";
 import * as archiver from 'archiver'
+import {MessageCodeMap} from "../interceptors/response.interceptor";
+import {InternalError1Exception} from "../exceptions/internal-error-1.exception";
 
 
 @Injectable()
@@ -83,48 +85,78 @@ export class FileUploadService {
 
   }
 
-  saveToDir(dirName, resultArray){
+  createDir(saveDirPathName){
+    return new Promise((resolve, reject)=>{
+      fs.mkdir(saveDirPathName, { recursive: true }, (err) => {
+        if(err){
+          reject(err)
+        }
+        resolve(saveDirPathName)
+      });
+    })
+  }
+
+  pushWriteTaskToList(resultArray, saveDirPathName, keyList){
+    let writeFilePromiseList = []
+    resultArray.map((langResult, index) => {
+      if (index === 0) {
+        return
+      }
+      const lang = langResult[0]
+
+      const saveFilePathName = path.join(saveDirPathName, `lang_${lang}.js`)
+
+
+      let sumContent = ``
+      langResult.map((content, index) => {
+        // 第一行直接跳过
+        if (index === 0) {
+          return
+        }
+        let key = this.removeAllNoASCIIChar(this.removeAllNewLine(keyList[index]))
+        let value = this.removeAllNewLine(content)
+        sumContent += `lang[\`${key}\`] = \`${value}\`\n`
+      })
+
+
+      let writePromise = this.writeFile(saveFilePathName, sumContent)
+      writeFilePromiseList.push(writePromise)
+
+
+    })
+
+    return writeFilePromiseList
+  }
+
+  compressDirToZip(saveDirPathName, zipFileOutputPathName){
+    this.zipDir(saveDirPathName, zipFileOutputPathName).then(() => {}).catch(() => {
+    })
+  }
+
+
+  async saveToDir(dirName, resultArray) {
     const keyList = resultArray[0]
     const saveDirPathName = path.resolve(__dirname, `./../../../uploads/translate-js/${dirName}`)
 
 
-    // 创建目录
-    fs.mkdir(saveDirPathName, { recursive: true }, (err) => {
-      if (err) throw err;
-
-      let writeFilePromiseList = []
-
-      resultArray.map((langResult, index)=>{
-        if(index === 0){return}
-        const lang = langResult[0]
-
-        const saveFilePathName = path.join(saveDirPathName, `lang_${lang}.js`)
-
-        console.log('saveFilePathName', saveFilePathName);
-
-        let sumContent = ``
-        langResult.map((content, index)=>{
-          // 第一行直接跳过
-          if(index === 0){return }
-          let key = this.removeAllNoASCIIChar(this.removeAllNewLine(keyList[index]))
-          let value = this.removeAllNewLine(content)
-          sumContent += `lang[\`${key}\`] = \`${value}\`\n`
-        })
-
-
-        let writePromise = this.writeFile(saveFilePathName, sumContent)
-        writeFilePromiseList.push(writePromise)
 
 
 
-      })
+    try{
+      // 1. 根据上传文件名称，创建目录A
+      await this.createDir(saveDirPathName)
 
-      Promise.all(writeFilePromiseList).then(()=>{
-        const zipFileOutputPathName = path.resolve(__dirname, `./../../../uploads/translate-js/${dirName}.zip`)
-        this.zipDir(saveDirPathName, zipFileOutputPathName).then(()=>{}).catch(()=>{})
-      })
-    });
+      // 2. 创建 js 翻译文件
+      const writeTaskPromiseList = this.pushWriteTaskToList(resultArray, saveDirPathName, keyList)
+      await Promise.all(writeTaskPromiseList)
 
+      // 3. 将目录A压缩成zip
+      const zipFileOutputPathName = path.resolve(__dirname, `./../../../uploads/translate-js/${dirName}.zip`)
+      await this.zipDir(saveDirPathName, zipFileOutputPathName)
+
+    } catch (e) {
+      throw new InternalError1Exception(MessageCodeMap.internalError, e)
+    }
 
 
   }
@@ -163,7 +195,7 @@ export default lang;
         .pipe(stream)
       ;
 
-      stream.on('close', () => resolve(null));
+      stream.on('close', () => resolve({source, out}));
       archive.finalize();
     });
   }
@@ -173,7 +205,7 @@ export default lang;
       fs.writeFile(saveFilePathName, this.templateFile(sumContent), function (err) {
         console.log('File is created successfully.');
         if(err){reject(err);return}
-        resolve(null)
+        resolve(saveFilePathName)
       });
     })
   }
