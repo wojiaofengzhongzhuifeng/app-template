@@ -1,9 +1,10 @@
 // 请求封装 - 开始
 import axios from "axios";
 import {useEffect, useState} from "react";
+import {message} from "antd";
 
 const instance = axios.create({
-  baseURL: 'https://www.sesametest.co:8080',
+  baseURL: 'http://localhost:3009',
   timeout: 50000,
 });
 
@@ -24,30 +25,38 @@ instance.interceptors.response.use(function (response) {
 });
 
 // todo - 在实践中优化
-export function useRequest(url, method='GET', data=null) {
+export function useRequest(axiosConf = {}, config = {}) {
+
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [result, setResult] = useState(null);
+  const [error, setError] = useState({});
+  const [data, setData] = useState({});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await instance({
-          url,
-          method,
-          data
-        });
-        setResult(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
+  const {showError} = config
+
+  const fetchData = async (customConfig) => {
+    setLoading(true);
+    try {
+      const test = {...axiosConf, ...customConfig}
+
+      console.log('axiosConf', axiosConf);
+
+      console.log('customConfig', customConfig);
+
+      const response = await instance(test);
+      setData(response.data.data);
+    } catch (err) {
+      if(showError){
+        message.error('获取数据错误',)
+        console.error(err)
       }
-    };
-    fetchData();
-  }, [url, method, data]);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { loading, error, result };
+  return { loading, error, data, fetchData };
 }
 
 /*
@@ -60,3 +69,20 @@ export function useRequest(url, method='GET', data=null) {
 */
 
 // 请求封装 - 结束
+
+
+export function isEmpty(value) {
+  if (value === null || value === undefined) {
+    return true;
+  }
+  if (typeof value === 'string' && value.trim() === '') {
+    return true;
+  }
+  if (Array.isArray(value) && value.length === 0) {
+    return true;
+  }
+  if (typeof value === 'object' && Object.keys(value).length === 0) {
+    return true;
+  }
+  return false;
+}

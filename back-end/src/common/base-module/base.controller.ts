@@ -1,6 +1,7 @@
-import {Body, Delete, Get, Param, Post, Put, Query} from "@nestjs/common";
+import {Body, Delete, Get, HttpCode, Param, Post, Put, Query} from "@nestjs/common";
 import {BaseService} from "./base.service";
 import {PaginationPipe} from "../pipes/pagination.pipe";
+import {RequestException} from "../exceptions/request.exception";
 
 export abstract class BaseController<T, C, U> {
 
@@ -8,6 +9,7 @@ export abstract class BaseController<T, C, U> {
   constructor(private readonly service: BaseService<T, C, U>) {}
 
   @Post()
+  @HttpCode(200)
   create(@Body() createDTO: C) {
     return this.service.createService(createDTO);
   }
@@ -32,6 +34,8 @@ export abstract class BaseController<T, C, U> {
     @Query(new PaginationPipe())
       {page, limit, id, relateEntityStringList, entityString}: { page?: number; limit?: number, id?: number, relateEntityStringList?: string[], entityString?: string},
   ) {
+
+    // throw new RequestException('error')
     if(id){
       return this.service.getAllInfoByIdService({id, relateEntityStringList,} );
     } else {
