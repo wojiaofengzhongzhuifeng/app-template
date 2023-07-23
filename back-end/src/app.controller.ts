@@ -43,4 +43,9 @@ export class AppController {
   ): Response1<string> {
     return this.appService.getHello5(age);
   }
+
+  @Get('test-error-1')
+  testError(){
+    return {a: 1}
+  }
 }
