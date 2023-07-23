@@ -3,24 +3,40 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {message} from "antd";
 
+
+// 从后端得到的映射表
+export const codeMessageMap = {
+  ok: 200,
+
+  // 业务错误
+  20001: '库存不足', // 假设代表库存不足
+
+  // 请求错误
+  40001: '无法根据id找到数据', // 无法根据id找到数据
+
+  // 响应错误
+  50001: '数据库错误'
+}
+
 const instance = axios.create({
   baseURL: 'http://localhost:3009',
   timeout: 50000,
 });
 
 instance.interceptors.response.use(function (response) {
-  console.log('asddsa', response);
+  console.log('response axios', response);
 
   if(response.status === 200 && response.data.code === 200){
     return response
   } else {
+    // 业务错误情况
     console.error('error request', response)
     return Promise.reject(response)
   }
 
 }, function (error) {
-  // todo 如果httpcode 是非200 ，就会执行这里?
-  console.error('error request error', error)
+  // 如果 httpcode 是非200 ，就会执行这里
+  console.log('response axios error', error)
   return Promise.reject(error);
 });
 
@@ -32,7 +48,8 @@ export function useRequest(axiosConf = {}, config = {}) {
   const [error, setError] = useState({});
   const [data, setData] = useState({});
 
-  const {showError} = config
+
+  const {showError = true} = config
 
   const fetchData = async (customConfig) => {
     setLoading(true);
@@ -44,17 +61,31 @@ export function useRequest(axiosConf = {}, config = {}) {
       console.log('customConfig', customConfig);
 
       const response = await instance(test);
-      setData(response.data.data);
+      setData(response.data); //
+
     } catch (err) {
-      if(showError){
-        message.error('获取数据错误',)
-        console.error(err)
+      setData(null)
+      if(err.response){
+        // 请求错误  or 响应错误
+        setError(err.response.data);
+      }  else{
+        // 业务错误
+        setError(err.data);
       }
-      setError(err);
+
+
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    if(!showError){return}
+    if(isEmpty(error)){return}
+
+    const errorMessage = codeMessageMap[error.code]
+    message.error(errorMessage)
+  }, [showError, error])
 
   return { loading, error, data, fetchData };
 }

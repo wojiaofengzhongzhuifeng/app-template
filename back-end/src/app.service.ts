@@ -28,7 +28,7 @@ export class AppService {
 
   // 错误响应：出现错误，并且需要在前端精确展示错误
   getHello4(): Response1<{a: number}> {
-    throw new CustomError(MessageCodeMap.user_not_have_limit, '自定义错误');
+    throw new CustomError(MessageCodeMap.outOfStock, '自定义错误');
   }
 
   // 使用管道，校验数据合法性，在controller 中

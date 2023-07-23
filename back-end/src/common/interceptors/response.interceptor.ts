@@ -12,7 +12,13 @@ export const MessageCodeMap = {
   ok: 200,
 
   // 业务错误
-  user_not_have_limit: 10001,
+  outOfStock: 20001, // 假设代表库存不足
+
+  // 请求错误
+  noFoundById: 40001, // 无法根据id找到数据
+
+  // 响应错误
+  dataBaseError: 50001 // 服务器错误
 }
 
 

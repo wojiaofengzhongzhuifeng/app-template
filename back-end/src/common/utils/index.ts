@@ -3,7 +3,9 @@ import {saltRounds} from "../constant";
 import * as bcrypt from 'bcrypt'
 
 export function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value) || 'unknown error';
+  let result = Object.keys(object).find(key => object[key] === value) || 'unknown error';
+  console.log("123321321", result);
+  return result
 }
 
 export function isEmpty(value) {
