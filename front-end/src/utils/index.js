@@ -62,15 +62,20 @@ export function useRequest(axiosConf = {}, config = {}) {
 
       const response = await instance(test);
       setData(response.data); //
-
+      await Promise.resolve(response.data)
     } catch (err) {
       setData(null)
       if(err.response){
         // 请求错误  or 响应错误
         setError(err.response.data);
+
+        await Promise.reject(err.response.data)
+
       }  else{
         // 业务错误
         setError(err.data);
+
+        await Promise.reject(err.data)
       }
 
 

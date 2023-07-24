@@ -13,6 +13,8 @@ export class CategoryController extends BaseController<Category, CreateCategoryD
     super(categoryService)
   }
 
+
+
   @Get()
   getData(
     @Query(new PaginationPipe()) {page, limit, id}: { page: number; limit: number, id: number},
