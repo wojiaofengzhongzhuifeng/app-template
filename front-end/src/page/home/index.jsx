@@ -14,6 +14,9 @@ const Home = ()=>{
           <li>
             <Link to="/error">error</Link>
           </li>
+          <li>
+            <Link to="/file-upload">file upload</Link>
+          </li>
         </ul>
       </nav>
     </div>

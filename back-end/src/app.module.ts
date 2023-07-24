@@ -58,6 +58,7 @@ import * as path from "path";
     TagModule,
     ContentModule,
     ServeStaticModule.forRoot({
+      // 通过 http://localhost:3009/translate-js/1689935479503-test111.zip 访问静态资源
       rootPath: path.resolve(__dirname, './../uploads')
     }),
   ],

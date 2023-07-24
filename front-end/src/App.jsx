@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 import Home from "./page/home/index.jsx";
 import Category from "./page/category/index.jsx";
 import Error from "./page/Error/index.jsx";
+import FileUpload from "./page/FileUpload/index.jsx";
 
 
 
@@ -26,6 +27,10 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/error" element={<Error />} />  // 正确：Route 被包裹在 Routes 中
+        </Routes>
+
+        <Routes>
+          <Route path="/file-upload" element={<FileUpload />} />  // 正确：Route 被包裹在 Routes 中
         </Routes>
 
       </Router>

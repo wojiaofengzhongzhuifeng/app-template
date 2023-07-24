@@ -3,6 +3,7 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {message} from "antd";
 
+export const BASE_URL = 'http://localhost:3009'
 
 // 从后端得到的映射表
 export const codeMessageMap = {
@@ -19,7 +20,7 @@ export const codeMessageMap = {
 }
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3009',
+  baseURL: BASE_URL,
   timeout: 50000,
 });
 
