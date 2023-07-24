@@ -62,8 +62,12 @@ export function useRequest(axiosConf = {}, config = {}) {
       console.log('customConfig', customConfig);
 
       const response = await instance(test);
-      setData(response.data); //
-      await Promise.resolve(response.data)
+      const responseData = response.data
+      setData(responseData); //
+      console.log('response123333', responseData);
+
+      // await Promise.resolve(responseData) // 这个还需要保留吗
+      return responseData
     } catch (err) {
       setData(null)
       if(err.response){

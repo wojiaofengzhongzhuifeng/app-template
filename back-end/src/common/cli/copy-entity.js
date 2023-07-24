@@ -43,6 +43,7 @@ function capitalize(str) {
 // todo 模版：将这个node.js 可以通过命令行生成，如 yarn create product tag 表示根据product目录，生成 tag 目录
 // todo 测试目录大写情况 const path1 = path.resolve('./src/Tag') const path2 = path.resolve('./src/Content')
 // 使用方法：
+
 // copyDir('path/to/oldName', 'path/to/newName', 'oldName', 'newName');
 const path1 = path.resolve(__dirname, './../../tag')
 const path2 = path.resolve(__dirname, './../../content')

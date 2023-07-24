@@ -1,4 +1,4 @@
-import {Button, Card, Form, Input, message, Table} from "antd";
+import {Button, Card, Form, Input, message, Modal, Table} from "antd";
 import {isEmpty, useRequest} from "../../utils/index.js";
 import {useEffect, useState} from "react";
 
@@ -16,6 +16,23 @@ const Category = ()=>{
     fetchData: deleteExec,
   } = useRequest({url: '/category', method: 'delete',}, {showError: true})
 
+  const {
+    loading: editItemLoading,
+    data: editResp,
+    fetchData: editExec,
+  } = useRequest({url: '/category', method: 'put',}, {showError: true})
+
+  const {
+    loading: getItemDetailLoading,
+    data: getDetailResp,
+    fetchData: getDetailExec,
+  } = useRequest({url: '/category', method: 'get',}, {showError: true})
+
+  const {
+    loading: createItemLoading,
+    fetchData: createExec,
+  } = useRequest({url: '/category', method: 'post',}, {showError: true})
+
 
   const [
     categoryPagination,
@@ -24,8 +41,13 @@ const Category = ()=>{
   const [tableDataList, setTableDataList] = useState([])
 
   const [total, setTotal] = useState(0)
+  const [selectCategory, setSelectCategory] = useState(null)
+  const [editCategoryForm] = Form.useForm();
 
-  console.log('resp', resp);
+  const [tagList, setTagList] = useState([])
+
+
+
 
   const categoryColumnList = [
     {
@@ -56,7 +78,12 @@ const Category = ()=>{
 
   useEffect(()=>{
     setCategoryPagination({current: 1, pageSize: 10})
+
+
+
   }, [])
+
+
 
   useEffect(()=>{
     if(isEmpty(categoryPagination)){return}
@@ -86,6 +113,33 @@ const Category = ()=>{
     console.log('deleteResp', deleteResp);
   }, [deleteResp])
 
+  useEffect( () => {
+
+
+    if (!selectCategory) {
+      return
+    }
+    const {id} = selectCategory
+
+
+
+
+    editCategoryForm.setFieldsValue(selectCategory)
+
+    async function test(){
+      const resp = await getDetailExec({
+        params: {id}
+      })
+      console.log('resp232323', resp);
+      setTagList(resp.data.tags)
+    }
+
+    test()
+
+
+
+  }, [selectCategory])
+
 
 
   const onPaginationChange = (current, size)=>{
@@ -93,13 +147,16 @@ const Category = ()=>{
   }
 
   const onEdit = (record)=>{
-
+    setSelectCategory(record)
   }
 
   const onDelete = async (record) => {
     console.log('record', record);
     const {id} = record
-    await deleteExec({params: {id}})
+    const resp = await deleteExec({params: {id}})
+
+    // todo 这里拿到的为什么是 undefined
+    console.log('deleteresp', resp);
 
 
     // 这里默认是 delete 接口调用成功的回调
@@ -111,6 +168,38 @@ const Category = ()=>{
     message.success('删除成功')
 
   }
+
+
+
+  const onFinish1 = async ()=>{
+    const result = editCategoryForm.getFieldsValue()
+    const {id} = selectCategory
+    console.log(result);
+    let newCategoryData = {...selectCategory, ...result}
+    await editExec({data: newCategoryData})
+
+    let newDataSource = tableDataList.map((item)=>{
+      if(item.id === id){
+        return {...item, ...result}
+      } else {
+        return {...item}
+      }
+    })
+    setTableDataList(newDataSource)
+
+    message.success('修改成功')
+  }
+
+  const onFinish = async (values)=>{
+    const {data: newCategory} = await createExec({
+      data: values
+    })
+    message.success('创建 category 成功')
+
+    let newCategoryList = [...tableDataList, newCategory, ]
+    setTableDataList(newCategoryList)
+  }
+
 
 
   return (
@@ -130,7 +219,7 @@ const Category = ()=>{
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
-          // onFinish={onFinish}
+          onFinish={onFinish}
           autoComplete="off"
         >
           <Form.Item
@@ -150,12 +239,57 @@ const Category = ()=>{
 
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={createItemLoading}>
               创建类别（category）
             </Button>
           </Form.Item>
         </Form>
       </Card>
+
+      <Modal open={selectCategory !== null} footer={null} onCancel={()=>{setSelectCategory(null)}}>
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish1}
+          autoComplete="off"
+          form={editCategoryForm}
+        >
+          <Form.Item
+            label="类别名称"
+            name="name"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="类别描述"
+            name="description"
+          >
+            <Input />
+          </Form.Item>
+
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+
+        关联 tag
+        {tagList && tagList.map((tag)=>{
+          const {name, description} = tag
+          return (
+            <div>
+              <div>tag 名称: {name}</div>
+              <div>tag 描述: {description}</div>
+            </div>
+          )
+        })}
+      </Modal>
     </>
   )
 
