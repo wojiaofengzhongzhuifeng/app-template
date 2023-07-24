@@ -29,7 +29,6 @@ const FileUpload = ()=>{
   };
   // const downloadUrl = successUpload ? `${BASE_URL}/translate-js/1689935479503-test111.zip` : ''
 
-
   return (
     <div>
       <Upload  {...props} itemRender={()=>{return null}}>

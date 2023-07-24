@@ -4,6 +4,7 @@ import { CreateFileUploadDto } from './dto/create-file-upload.dto';
 import { UpdateFileUploadDto } from './dto/update-file-upload.dto';
 import {FileInterceptor} from "@nestjs/platform-express";
 import { diskStorage } from 'multer';
+import * as path from "path";
 
 @Controller('file-upload')
 export class FileUploadController {
@@ -34,7 +35,7 @@ export class FileUploadController {
   @Post('/resolve')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './uploads',
+      destination: path.resolve(__dirname, './../../../uploads'),
       filename: (req, file, callback) => {
         callback(null, `${Date.now()}-${file.originalname}`);
       }

@@ -9,8 +9,10 @@ import {MessageCodeMap} from "../interceptors/response.interceptor";
 import {InternalError1Exception} from "../exceptions/internal-error-1.exception";
 
 
+
 @Injectable()
 export class FileUploadService {
+  // todo 语言数量允许调整
   static langStringList = ["en", "cn", "br", "de", "es", "id", "pt", "ru", "th", "tr", "uk", "vn", "ja", "ar", "fr", "tw"]
 
 
@@ -42,8 +44,9 @@ export class FileUploadService {
 
   getListFromExcelFile(filename){
     const fileName1 = path.resolve(__dirname, `./../../../uploads/${filename}`)
+
+
     const workSheetsFromFile = xlsx.parse(fileName1);
-    console.log('workSheetsFromFile', JSON.stringify(workSheetsFromFile));
     const datalistList = workSheetsFromFile[0].data // [[第一行数据]],[第二行数据]]
     return datalistList
 
