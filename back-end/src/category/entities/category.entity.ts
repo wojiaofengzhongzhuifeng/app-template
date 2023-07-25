@@ -17,6 +17,5 @@ export class Category extends BaseEntity{
   description: string;
 
 
-  @OneToMany(()=>Tag, (tag)=>tag.category)
-  tags: Tag[]
+
 }

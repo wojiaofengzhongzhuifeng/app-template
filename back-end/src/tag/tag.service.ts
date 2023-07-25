@@ -44,7 +44,7 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
     const createTag = new Tag()
     createTag.name = name
     createTag.description = description
-    createTag.category = category
+    createTag.categoryId = categoryId
     const sqlResult = await super.createService(createTag)
     return sqlResult
 

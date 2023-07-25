@@ -1,6 +1,6 @@
 import {OmitType} from "@nestjs/mapped-types";
 import {Category} from "../entities/category.entity";
 
-export class CreateCategoryDto extends OmitType(Category, ['id', 'createdAt', 'updatedAt', 'tags']){
+export class CreateCategoryDto extends OmitType(Category, ['id', 'createdAt', 'updatedAt']){
 
 }
