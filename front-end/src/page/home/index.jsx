@@ -15,6 +15,9 @@ const Home = ()=>{
             <Link to="/tag">tag</Link>
           </li>
           <li>
+            <Link to="/content">content</Link>
+          </li>
+          <li>
             <Link to="/error">error</Link>
           </li>
           <li>

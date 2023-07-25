@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, Query, Put} from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, Query, Put, HttpStatus, HttpCode} from '@nestjs/common';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
@@ -13,6 +13,7 @@ import {PaginationPipe} from "../common/pipes/pagination.pipe";
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 
+  @HttpCode(200)
   @Post()
   create(@Body() createContentDto: CreateContentDto) {
     return this.contentService.create(createContentDto);
