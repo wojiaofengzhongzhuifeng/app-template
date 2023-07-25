@@ -7,6 +7,7 @@ import Home from "./page/home/index.jsx";
 import Category from "./page/category/index.jsx";
 import Error from "./page/Error/index.jsx";
 import FileUpload from "./page/FileUpload/index.jsx";
+import Tag from "./page/tag/index.jsx";
 
 
 
@@ -25,6 +26,11 @@ function App() {
         <Routes>
           <Route path="/category" element={<Category />} />  // 正确：Route 被包裹在 Routes 中
         </Routes>
+
+        <Routes>
+          <Route path="/tag" element={<Tag />} />  // 正确：Route 被包裹在 Routes 中
+        </Routes>
+
         <Routes>
           <Route path="/error" element={<Error />} />  // 正确：Route 被包裹在 Routes 中
         </Routes>
@@ -32,6 +38,9 @@ function App() {
         <Routes>
           <Route path="/file-upload" element={<FileUpload />} />  // 正确：Route 被包裹在 Routes 中
         </Routes>
+
+
+
 
       </Router>
 
