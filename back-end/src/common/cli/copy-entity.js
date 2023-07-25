@@ -45,10 +45,10 @@ function capitalize(str) {
 // 使用方法：
 
 // copyDir('path/to/oldName', 'path/to/newName', 'oldName', 'newName');
-const path1 = '/Users/gate/Desktop/learn-code/cms-nest/front-end/src/page/category'
-const path2 = '/Users/gate/Desktop/learn-code/cms-nest/front-end/src/page/tag'
+const path1 = '/Users/gate/Desktop/learn-code/cms-nest/front-end/src/page/tag'
+const path2 = '/Users/gate/Desktop/learn-code/cms-nest/front-end/src/page/content'
 
 
 
 
-copyDir(path1, path2, 'category', 'tag');
+copyDir(path1, path2, 'tag', 'content');

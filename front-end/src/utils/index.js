@@ -71,7 +71,7 @@ export function useRequest(axiosConf = {}, config = {}) {
     } catch (err) {
       setData(null)
       if(err.response){
-        // 请求错误  or 响应错误
+        // 请求错误400  or 响应错误500
         setError(err.response.data);
 
         await Promise.reject(err.response.data)
@@ -93,7 +93,9 @@ export function useRequest(axiosConf = {}, config = {}) {
     if(!showError){return}
     if(isEmpty(error)){return}
 
-    const errorMessage = codeMessageMap[error.code]
+    console.log('error111123', error);
+
+    const errorMessage = codeMessageMap[error.code] || error.message
     message.error(errorMessage)
   }, [showError, error])
 

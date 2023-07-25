@@ -21,6 +21,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let message: string;
     let code: number; // code
 
+
+    console.log('exception111111123321', exception);
+
     // todo 模版，遇到 404 情况，message 数据读取有问题
 
     if (exception instanceof CustomError) {
@@ -86,9 +89,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
 
     } else {
-      console.log('exception other', exception);
+
+      // 什么情况下会走这里？
+      // 1. 创建数据的时候，数据库字段要求是a,b,c，但是接口调用只传了 a
+      console.log('exception other',typeof  exception);
+      console.log('exception other',JSON.stringify(exception)  );
+
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = 'Internal server error';
+      message = JSON.stringify(exception);
       code = status;
     }
 
