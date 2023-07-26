@@ -11,6 +11,7 @@ import {BaseService} from "../common/base-module/base.service";
 import {LoggerInterface} from "../common/log/logger.interface";
 import {CustomLogService} from "../common/custom-log/custom-log.service";
 import {CategoryService} from "../category/category.service";
+import {CreateRelationShipDTO} from "./dto/create-relation-ship.dto";
 
 @Injectable()
 export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
@@ -75,6 +76,24 @@ export class TagService extends BaseService<Tag, CreateTagDto, UpdateTagDto>{
 
 
 
+
+
+  }
+
+  async createRelationshipWithCategoryService(createRelationShipDTO: CreateRelationShipDTO) {
+    const {tagIdList, categoryId} = createRelationShipDTO
+    const tags = await this.tagRepository.createQueryBuilder("tag")
+      .where("tag.id IN (:...ids)", {ids: tagIdList})
+      .getMany();
+
+    let newTags = tags.map((tag)=>{
+      return {...tag, categoryId}
+    })
+
+    const result = await this.tagRepository.save(newTags)
+
+    console.log('result', result);
+    return result
 
 
   }

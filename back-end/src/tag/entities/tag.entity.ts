@@ -18,7 +18,7 @@ export class Tag extends BaseEntity{
   @Column()
   description: string;
 
-
+  @Column()
   categoryId: number
 
   @OneToMany(()=>Content, (content)=>content.tag)

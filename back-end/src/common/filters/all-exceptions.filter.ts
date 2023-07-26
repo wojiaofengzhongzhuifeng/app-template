@@ -29,7 +29,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof CustomError) {
       console.log('exception customError', exception);
 
-      // todo 确认 对于业务错误，有两种 httpcode？一种是 200 一种是非200（一般为400）
       // status = exception.getStatus();
       status = 200
 
@@ -38,7 +37,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof CustomError1){
       console.log('exception customError', exception);
 
-      // todo 确认 对于业务错误，有两种 httpcode？一种是 200 一种是非200（一般为400）
       // status = exception.getStatus();
       status = 200
 
@@ -48,6 +46,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     else if (exception instanceof HttpException) {
 
       console.log('exception HttpException123321', JSON.stringify(exception));
+      // 什么时候会走到这里？ 设置了 CreateRelationShipDTO ，并且接口调用的时候，没有传 categoryId
       /*
       * exception HttpException 情况1
       {"response":"无法找到authorId 2 的数据","status":400,"message":"无法找到authorId 2 的数据","name":"RequestException"}

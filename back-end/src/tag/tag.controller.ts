@@ -5,6 +5,7 @@ import { UpdateTagDto } from './dto/update-tag.dto';
 import {PaginationPipe} from "../common/pipes/pagination.pipe";
 import {BaseController} from "../common/base-module/base.controller";
 import {Tag} from "./entities/tag.entity";
+import {CreateRelationShipDTO} from "./dto/create-relation-ship.dto";
 
 @Controller('tag')
 export class TagController extends BaseController<Tag, CreateTagDto, UpdateTagDto>{
@@ -24,6 +25,11 @@ export class TagController extends BaseController<Tag, CreateTagDto, UpdateTagDt
       return  super.getData({limit, page, entityString: 'tag'})
     }
 
+  }
+
+  @Post('relationship')
+  createRelationshipWithCategory(@Body() createRelationShipDTO: CreateRelationShipDTO){
+    return this.tagService.createRelationshipWithCategoryService(createRelationShipDTO)
   }
 
 
