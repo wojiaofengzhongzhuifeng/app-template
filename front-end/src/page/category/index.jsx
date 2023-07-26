@@ -1,5 +1,5 @@
-import {Button, Card, Form, Input, message, Modal, Table} from "antd";
-import {isEmpty, useRequest} from "../../utils/index.js";
+import {Button, Card, Form, Input, message, Modal, Table, Transfer} from "antd";
+import {arrayDifference, isEmpty, useRequest} from "../../utils/index.js";
 import {useEffect, useState} from "react";
 
 const Category = ()=>{
@@ -34,6 +34,12 @@ const Category = ()=>{
   } = useRequest({url: '/category', method: 'post',}, {showError: true})
 
 
+  const {
+    fetchData: getTagList
+  } = useRequest({url: '/tag', method: 'get',}, {showError: true})
+
+
+
   const [
     categoryPagination,
     setCategoryPagination
@@ -45,6 +51,9 @@ const Category = ()=>{
   const [editCategoryForm] = Form.useForm();
 
   const [tagList, setTagList] = useState([])
+  const [targetKeys, setTargetKeys] = useState([]);// 右侧框
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [allTagList, setAllTagList] = useState([])
 
 
 
@@ -78,9 +87,31 @@ const Category = ()=>{
 
   useEffect(()=>{
     setCategoryPagination({current: 1, pageSize: 10})
+    async function test() {
+      const respData = await getTagList({limit: 10000, pageSize: 1})
+      const tagList = respData.data.items
 
 
+      console.log('tagList', tagList);
+      const test = tagList.map((tagItem)=>{
+        const {id, name, description} = tagItem
+        return {
+          key: id,
+          title: name,
+          description: description,
+        }
+      })
 
+      let allTagIdList = test.map((tagItem)=>{
+        return tagItem.key
+      })
+      setAllTagList(test)
+
+      console.log('allTagIdList', allTagIdList);
+      setTargetKeys(allTagIdList)
+
+    }
+    test()
   }, [])
 
 
@@ -131,6 +162,7 @@ const Category = ()=>{
         params: {id}
       })
       console.log('resp232323', resp);
+
       setTagList(resp.data.tags)
     }
 
@@ -155,7 +187,6 @@ const Category = ()=>{
     const {id} = record
     const resp = await deleteExec({params: {id}})
 
-    // todo 这里拿到的为什么是 undefined
     console.log('deleteresp', resp);
 
 
@@ -191,14 +222,36 @@ const Category = ()=>{
   }
 
   const onFinish = async (values)=>{
-    const {data: newCategory} = await createExec({
-      data: values
-    })
-    message.success('创建 category 成功')
 
-    let newCategoryList = [...tableDataList, newCategory, ]
-    setTableDataList(newCategoryList)
+    console.log('allTagList', allTagList);
+    console.log('targetKeys 右侧', targetKeys);
+    let allTagIdList = allTagList.map((tagItem)=>tagItem.key)
+
+    let needToConnectTagIdList = arrayDifference(allTagIdList, targetKeys)
+
+    console.log('needToConnectTagIdList', needToConnectTagIdList);
+
+    // const {data: newCategory} = await createExec({
+    //   data: values
+    // })
+    // message.success('创建 category 成功')
+    //
+    // let newCategoryList = [...tableDataList, newCategory, ]
+    // setTableDataList(newCategoryList)
   }
+
+  const onChange = (nextTargetKeys, direction, moveKeys) => {
+    console.log('targetKeys:', nextTargetKeys);
+    console.log('direction:', direction);
+    console.log('moveKeys:', moveKeys);
+    setTargetKeys(nextTargetKeys);
+  };
+
+  const onSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    console.log('sourceSelectedKeys:', sourceSelectedKeys);
+    console.log('targetSelectedKeys:', targetSelectedKeys);
+    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+  };
 
 
 
@@ -244,6 +297,18 @@ const Category = ()=>{
             </Button>
           </Form.Item>
         </Form>
+
+        <p>添加tag关联</p>
+        <Transfer
+          dataSource={allTagList}
+          titles={['已关联', '未关联']}
+          targetKeys={targetKeys}
+          selectedKeys={selectedKeys}
+          onChange={onChange}
+          onSelectChange={onSelectChange}
+          // onScroll={onScroll}
+          render={(item) => item.title}
+        />
       </Card>
 
       <Modal open={selectCategory !== null} footer={null} onCancel={()=>{setSelectCategory(null)}}>

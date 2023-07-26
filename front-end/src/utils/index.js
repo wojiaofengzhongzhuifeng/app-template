@@ -129,3 +129,14 @@ export function isEmpty(value) {
   }
   return false;
 }
+
+/**
+ * 对比两个数组的item， 返回不同item
+ *
+ * @param {Array} array1 - 数组1
+ * @param {Array} array2 - 数组2
+ * @returns {Array} 不同item组成的数组
+ */
+export function arrayDifference(array1, array2) {
+  return array1.filter(element => !array2.includes(element));
+}
