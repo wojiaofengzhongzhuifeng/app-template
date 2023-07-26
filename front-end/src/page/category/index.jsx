@@ -38,6 +38,10 @@ const Category = ()=>{
     fetchData: getTagList
   } = useRequest({url: '/tag', method: 'get',}, {showError: true})
 
+  const {
+    fetchData: createRelationshipWithTagExec
+  } = useRequest({url: '/tag/relationship', method: 'post',}, {showError: true})
+
 
 
   const [
@@ -223,21 +227,44 @@ const Category = ()=>{
 
   const onFinish = async (values)=>{
 
-    console.log('allTagList', allTagList);
-    console.log('targetKeys 右侧', targetKeys);
+
+
+
+
+    const {data: newCategory} = await createExec({
+      data: values
+    })
+    message.success('创建 category 成功')
+    console.log('newCategory', newCategory);
+
+    // 添加关联
+
+    let newCategoryList = [...tableDataList, newCategory, ]
+    setTableDataList(newCategoryList)
+
+
+
+
+    // 调用另一个接口，用于category 与 tag 关联
     let allTagIdList = allTagList.map((tagItem)=>tagItem.key)
 
     let needToConnectTagIdList = arrayDifference(allTagIdList, targetKeys)
 
-    console.log('needToConnectTagIdList', needToConnectTagIdList);
+    if(isEmpty(needToConnectTagIdList)){return}
+    const respData = await createRelationshipWithTagExec({
+      data: {
+        "categoryId": newCategory.id,
+        "tagIdList": needToConnectTagIdList
+      }
+    })
+    message.success('category tag 关联成功')
 
-    // const {data: newCategory} = await createExec({
-    //   data: values
-    // })
-    // message.success('创建 category 成功')
-    //
-    // let newCategoryList = [...tableDataList, newCategory, ]
-    // setTableDataList(newCategoryList)
+
+
+
+    console.log('respData create', respData);
+
+
   }
 
   const onChange = (nextTargetKeys, direction, moveKeys) => {
