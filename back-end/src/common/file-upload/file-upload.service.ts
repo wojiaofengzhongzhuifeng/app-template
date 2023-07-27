@@ -59,9 +59,13 @@ export class FileUploadService {
     let trimmedArray = list.map(item => item.trim());
     let string = trimmedArray.join(',');
 
+    console.log('string', string);
+
     let string1 = FileUploadService.langStringList.join(',')
 
-    return string === string1;
+    console.log('string1', string1);
+
+    return string.length <= string1.length;
   }
 
 
@@ -105,7 +109,7 @@ export class FileUploadService {
       if (index === 0) {
         return
       }
-      const lang = langResult[0]
+      const lang = langResult[0].toLowerCase()
 
       const saveFilePathName = path.join(saveDirPathName, `lang_${lang}.js`)
 
