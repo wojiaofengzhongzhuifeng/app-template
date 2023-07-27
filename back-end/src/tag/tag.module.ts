@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import {TypeOrmModule} from "@nestjs/typeorm";
@@ -14,7 +14,7 @@ import {CategoryModule} from "../category/category.module";
     filePath: './logs/log.txt',
   }),
     LogModule,
-    CategoryModule
+    forwardRef(()=>CategoryModule)
   ],
   controllers: [TagController],
   providers: [TagService],

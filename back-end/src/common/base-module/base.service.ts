@@ -61,4 +61,12 @@ export abstract class BaseService<T, C, U> {
     return item
   }
 
+  async findOneByQueryService(query){
+    const item = await this.repository.findOne({
+      // @ts-ignore
+      where: { ...query,  isDel: 0},
+    });
+    return item
+  }
+
 }
