@@ -9,8 +9,7 @@ import Error from "./page/Error/index.jsx";
 import FileUpload from "./page/FileUpload/index.jsx";
 import Tag from "./page/tag/index.jsx";
 import Content from "./page/content/index.jsx";
-
-
+import Lang from "./page/lang/index.jsx";
 
 
 
@@ -45,6 +44,9 @@ function App() {
           <Route path="/file-upload" element={<FileUpload />} />  // 正确：Route 被包裹在 Routes 中
         </Routes>
 
+        <Routes>
+          <Route path="/lang" element={<Lang />} />  // 正确：Route 被包裹在 Routes 中
+        </Routes>
 
 
 

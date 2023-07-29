@@ -23,6 +23,9 @@ const Home = ()=>{
           <li>
             <Link to="/file-upload">file upload</Link>
           </li>
+          <li>
+            <Link to="/lang">国际化</Link>
+          </li>
         </ul>
       </nav>
     </div>

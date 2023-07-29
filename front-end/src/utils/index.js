@@ -140,3 +140,28 @@ export function isEmpty(value) {
 export function arrayDifference(array1, array2) {
   return array1.filter(element => !array2.includes(element));
 }
+
+export const useCountdown = (initialSeconds) => {
+  const [seconds, setSeconds] = useState(initialSeconds);
+  const [isActive, setIsActive] = useState(false);
+
+  const startCountdown = () => {
+    setIsActive(true);
+  };
+
+  useEffect(() => {
+    if (!isActive || seconds <= 0) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setSeconds(seconds - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [isActive, seconds]);
+
+  return {seconds, startCountdown};
+};
+
+console.log('utils');
